@@ -1,8 +1,10 @@
 {
   "name": "@saramorillon/http-router",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
-  "files": ["dist/*"],
+  "files": [
+    "dist/*"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
