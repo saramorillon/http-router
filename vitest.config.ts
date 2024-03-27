@@ -7,5 +7,8 @@ export default defineConfig({
     mockReset: true,
     restoreMocks: true,
     include: ['tests/**/*.test.ts'],
+    coverage: {
+      exclude: ['**/types.ts', '**/index.ts'],
+    },
   },
 })

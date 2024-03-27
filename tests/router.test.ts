@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { Router } from '../src/index.js'
+import { Router } from '../src/router.js'
 
 describe('use', () => {
   it('should add listener to routes', () => {
