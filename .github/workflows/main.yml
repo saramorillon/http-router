@@ -19,15 +19,15 @@ jobs:
           scope: '@saramorillon'
 
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
 
       - name: Build sources
-        run: yarn build
+        run: pnpm build
 
       - name: Run tests
-        run: yarn vitest run
+        run: pnpm vitest run
 
       - name: Publish package
-        run: yarn publish
+        run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
