@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 export function mockReq(req: Partial<IncomingMessage> = {}): IncomingMessage {
   return {

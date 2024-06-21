@@ -1,4 +1,4 @@
-import { PassThrough } from 'stream'
+import { PassThrough } from 'node:stream'
 import { getBody, getJsonBody, getStringBody, getUrlEncodedBody } from '../src/helpers.js'
 
 describe('getBody', () => {

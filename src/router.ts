@@ -10,8 +10,6 @@ interface IRoute {
 export class Router {
   private _routes: (IRoute | RouteListener)[] = []
 
-  constructor() {}
-
   use(...listeners: RouteListener[]) {
     this._routes.push(...listeners)
     return this
@@ -82,7 +80,7 @@ export class Router {
     }
 
     const catchAllRoute = this._routes.find(
-      (route): route is IRoute => typeof route !== 'function' && route.method === req.method && route.path === '*'
+      (route): route is IRoute => typeof route !== 'function' && route.method === req.method && route.path === '*',
     )
     if (catchAllRoute) {
       for (const listener of catchAllRoute.listeners) {
