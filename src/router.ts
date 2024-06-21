@@ -59,7 +59,6 @@ export class Router {
     req.method = req.method.toLowerCase()
     req.baseUrl = `${req.protocol}://${req.headers.host}`
     req.params = {}
-    req.body = {}
 
     const { pathname } = new URL(req.url, req.baseUrl)
     for (const route of this._routes) {
