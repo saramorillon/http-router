@@ -10,7 +10,7 @@ interface IRoute {
 export class Router {
   private _routes: (IRoute | RouteListener)[] = []
 
-  constructor(private _protocol: string) {}
+  constructor() {}
 
   use(...listeners: RouteListener[]) {
     this._routes.push(...listeners)
@@ -49,8 +49,15 @@ export class Router {
       return
     }
 
+    if (req.headers['x-forwarded-proto'] === 'http' || req.headers['x-forwarded-proto'] === 'https') {
+      req.protocol = req.headers['x-forwarded-proto']
+    } else if ('encrypted' in req.socket) {
+      req.protocol = 'https'
+    } else {
+      req.protocol = 'http'
+    }
     req.method = req.method.toLowerCase()
-    req.baseUrl = `${this._protocol}://${req.headers.host}`
+    req.baseUrl = `${req.protocol}://${req.headers.host}`
     req.params = {}
     req.body = {}
 
@@ -76,7 +83,7 @@ export class Router {
     }
 
     const catchAllRoute = this._routes.find(
-      (route): route is IRoute => typeof route !== 'function' && route.method === req.method && route.path === '*',
+      (route): route is IRoute => typeof route !== 'function' && route.method === req.method && route.path === '*'
     )
     if (catchAllRoute) {
       for (const listener of catchAllRoute.listeners) {
@@ -101,6 +108,10 @@ export class Router {
 
     for (let i = 0; i < routeParts.length; i++) {
       if (routeParts[i].startsWith(':')) {
+        if (!reqParts[i]) {
+          return
+        }
+
         params[routeParts[i].slice(1)] = reqParts[i]
         continue
       }
