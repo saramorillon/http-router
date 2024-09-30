@@ -10,8 +10,9 @@ export function mockReq(req: Partial<IncomingMessage> = {}): IncomingMessage {
   } as IncomingMessage
 }
 
-export function mockRes(req: Partial<ServerResponse> = {}): ServerResponse {
+export function mockRes(res: Partial<ServerResponse> = {}): ServerResponse {
   return {
     end: vi.fn(),
+    ...res,
   } as never
 }

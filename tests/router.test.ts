@@ -161,7 +161,17 @@ describe('listen', () => {
     expect(req.baseUrl).toBe('http://localhost')
   })
 
-  it('should initq request params', async () => {
+  it('should set request query params', async () => {
+    const req = mockReq({ url: '/test?param=value' })
+    const res = mockRes()
+
+    const router = new Router()
+    await router.listen(req, res)
+
+    expect(req.query).toEqual(new URLSearchParams({ param: 'value' }))
+  })
+
+  it('should init request params', async () => {
     const req = mockReq()
     const res = mockRes()
 

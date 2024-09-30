@@ -5,6 +5,7 @@ declare module 'node:http' {
     protocol: 'http' | 'https'
     baseUrl: string
     params: Record<string, string>
+    query: URLSearchParams
   }
 }
 

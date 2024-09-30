@@ -56,9 +56,12 @@ export class Router {
     }
     req.method = req.method.toLowerCase()
     req.baseUrl = `${req.protocol}://${req.headers.host}`
+
+    const { pathname, searchParams } = new URL(req.url, req.baseUrl)
+
+    req.query = searchParams
     req.params = {}
 
-    const { pathname } = new URL(req.url, req.baseUrl)
     for (const route of this._routes) {
       if (typeof route === 'function') {
         await route(req, res)
