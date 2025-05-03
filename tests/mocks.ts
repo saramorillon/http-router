@@ -12,6 +12,8 @@ export function mockReq(req: Partial<IncomingMessage> = {}): IncomingMessage {
 
 export function mockRes(res: Partial<ServerResponse> = {}): ServerResponse {
   return {
+    hasHeader: vi.fn(),
+    setHeader: vi.fn(),
     end: vi.fn(),
     ...res,
   } as never

@@ -68,6 +68,18 @@ describe('delete', () => {
 })
 
 describe('listen', () => {
+  it('should add res helpers', async () => {
+    const req = mockReq({ method: undefined })
+    const res = mockRes()
+
+    const router = new Router()
+    await router.listen(req, res)
+
+    expect(res.json).toEqual(expect.any(Function))
+    expect(res.text).toEqual(expect.any(Function))
+    expect(res.redirect).toEqual(expect.any(Function))
+  })
+
   it('should return 404 error if method is not defined', async () => {
     const req = mockReq({ method: undefined })
     const res = mockRes()
@@ -99,6 +111,19 @@ describe('listen', () => {
 
     expect(res.statusCode).toBe(404)
     expect(res.end).toHaveBeenCalled()
+  })
+
+  it('should add req.body helpers', async () => {
+    const req = mockReq({ headers: { host: 'localhost' } })
+    const res = mockRes()
+
+    const router = new Router()
+    await router.listen(req, res)
+
+    expect(req.body.raw).toEqual(expect.any(Function))
+    expect(req.body.text).toEqual(expect.any(Function))
+    expect(req.body.json).toEqual(expect.any(Function))
+    expect(req.body.encoded).toEqual(expect.any(Function))
   })
 
   it('should set request protocol with "x-forwarded-proto" header', async () => {

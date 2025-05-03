@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { RouteListener } from './models.js'
+import { getBody, getJsonBody, getStringBody, getUrlEncodedBody, redirect, sendJson, sendText } from './utils.js'
 
 interface IRoute {
   method: string
@@ -41,10 +42,21 @@ export class Router {
   }
 
   async listen(req: IncomingMessage, res: ServerResponse) {
+    res.json = sendJson.bind(res)
+    res.text = sendText.bind(res)
+    res.redirect = redirect.bind(res)
+
     if (!req.method || !req.url || !req.headers.host) {
       res.statusCode = 404
       res.end()
       return
+    }
+
+    req.body = {
+      raw: getBody.bind(req),
+      text: getStringBody.bind(req),
+      json: getJsonBody.bind(req),
+      encoded: getUrlEncodedBody.bind(req),
     }
 
     if (req.headers['x-forwarded-proto'] === 'http' || req.headers['x-forwarded-proto'] === 'https') {

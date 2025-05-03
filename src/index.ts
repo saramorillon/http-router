@@ -6,9 +6,20 @@ declare module 'node:http' {
     baseUrl: string
     params: Record<string, string>
     query: URLSearchParams
+    body: {
+      raw: () => Promise<Buffer>
+      text: () => Promise<string>
+      json: () => Promise<unknown>
+      encoded: () => Promise<unknown>
+    }
+  }
+
+  interface ServerResponse {
+    json: (obj: unknown) => void
+    text: (text: string) => void
+    redirect: (location: string, status?: number) => void
   }
 }
 
-export * from './helpers.js'
 export * from './models.js'
 export * from './router.js'
