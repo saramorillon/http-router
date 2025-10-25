@@ -1,6 +1,20 @@
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { PassThrough } from 'node:stream'
-import { getBody, getJsonBody, getStringBody, getUrlEncodedBody, redirect, sendHtml, sendJson, sendText } from '../src/utils.js'
-import { mockRes } from './mocks.js'
+import {
+  getBody,
+  getJsonBody,
+  getStringBody,
+  getUrlEncodedBody,
+  redirect,
+  sendHtml,
+  sendJson,
+  sendText,
+  serveStatic,
+} from '../src/utils.js'
+import { mockReq, mockRes } from './mocks.js'
+
+vi.mock(import('node:fs/promises'))
 
 describe('getBody', () => {
   it('should return body as buffer', async () => {
@@ -137,5 +151,47 @@ describe('redirect', () => {
     const res = mockRes()
     redirect.call(res, 'http://test.com')
     expect(res.end).toHaveBeenCalled()
+  })
+})
+
+describe('serveStatic', () => {
+  beforeEach(() => {
+    vi.mocked(readFile).mockResolvedValue('content')
+  })
+
+  it('should serve default index.html with default root', async () => {
+    const req = mockReq()
+    const res = mockRes()
+    await serveStatic()(req, res)
+    expect(readFile).toHaveBeenCalledWith(resolve('public', 'index.html'), 'utf8')
+    expect(res.setHeader).toHaveBeenCalledWith('content-type', 'text/html')
+    expect(res.end).toHaveBeenCalledWith('content')
+  })
+
+  it('should serve use custom root', async () => {
+    const req = mockReq()
+    const res = mockRes()
+    await serveStatic('my_public_folder')(req, res)
+    expect(readFile).toHaveBeenCalledWith(resolve('my_public_folder', 'index.html'), 'utf8')
+    expect(res.setHeader).toHaveBeenCalledWith('content-type', 'text/html')
+    expect(res.end).toHaveBeenCalledWith('content')
+  })
+
+  it('should serve requested file', async () => {
+    const req = mockReq({ url: '/index.js' })
+    const res = mockRes()
+    await serveStatic()(req, res)
+    expect(readFile).toHaveBeenCalledWith(resolve('public', 'index.js'), 'utf8')
+    expect(res.setHeader).toHaveBeenCalledWith('content-type', 'text/javascript')
+    expect(res.end).toHaveBeenCalledWith('content')
+  })
+
+  it('should return a 404 error if file does not exist', async () => {
+    vi.mocked(readFile).mockRejectedValue(new Error('Not found'))
+    const req = mockReq({ url: '/index.js' })
+    const res = mockRes()
+    await serveStatic()(req, res)
+    expect(res.statusCode).toBe(404)
+    expect(res.end).toHaveBeenCalledWith()
   })
 })

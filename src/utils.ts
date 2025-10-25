@@ -1,5 +1,8 @@
-import type { ServerResponse } from 'node:http'
+import { readFile } from 'node:fs/promises'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { resolve } from 'node:path'
 import type { Readable } from 'node:stream'
+import mime from 'mime/lite'
 
 export function getBody(this: Readable) {
   return new Promise<Buffer>((resolve) => {
@@ -55,4 +58,18 @@ export function redirect(this: ServerResponse, location: string, statusCode = 30
   this.setHeader('location', location)
   this.statusCode = statusCode
   this.end()
+}
+
+export function serveStatic(root = 'public') {
+  return async (req: IncomingMessage, res: ServerResponse) => {
+    const filePath = resolve(root, req.url?.replace('/', '') || 'index.html')
+    try {
+      const content = await readFile(filePath, 'utf8')
+      res.setHeader('content-type', mime.getType(filePath) || 'application/octet-stream')
+      res.end(content)
+    } catch {
+      res.statusCode = 404
+      res.end()
+    }
+  }
 }
