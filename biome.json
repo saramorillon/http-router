@@ -1,7 +1,10 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "files": {
-    "ignore": ["node_modules/*", "dist/*"]
+    "includes": [
+      "src/**/*",
+      "tests/**/*"
+    ]
   },
   "formatter": {
     "lineWidth": 120,

@@ -17,10 +17,10 @@
     "build": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.3",
-    "@types/node": "^20.11.30",
-    "@vitest/coverage-v8": "^1.4.0",
-    "typescript": "^5.4.3",
-    "vitest": "^1.4.0"
+    "@biomejs/biome": "2.2.4",
+    "@types/node": "^24.9.1",
+    "@vitest/coverage-v8": "^4.0.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.3"
   }
 }
