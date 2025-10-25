@@ -44,6 +44,13 @@ export function sendText(this: ServerResponse, text: string) {
   this.end(text)
 }
 
+export function sendHtml(this: ServerResponse, html: string) {
+  if (!this.hasHeader('content-type')) {
+    this.setHeader('content-type', 'text/html')
+  }
+  this.end(html)
+}
+
 export function redirect(this: ServerResponse, location: string, statusCode = 301) {
   this.setHeader('location', location)
   this.statusCode = statusCode

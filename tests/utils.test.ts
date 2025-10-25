@@ -1,5 +1,5 @@
 import { PassThrough } from 'node:stream'
-import { getBody, getJsonBody, getStringBody, getUrlEncodedBody, redirect, sendJson, sendText } from '../src/utils.js'
+import { getBody, getJsonBody, getStringBody, getUrlEncodedBody, redirect, sendHtml, sendJson, sendText } from '../src/utils.js'
 import { mockRes } from './mocks.js'
 
 describe('getBody', () => {
@@ -90,6 +90,26 @@ describe('sendText', () => {
   it('should send text', () => {
     const res = mockRes()
     sendText.call(res, 'value')
+    expect(res.end).toHaveBeenCalledWith('value')
+  })
+})
+
+describe('sendHtml', () => {
+  it('should set content-type header', () => {
+    const res = mockRes()
+    sendHtml.call(res, 'value')
+    expect(res.setHeader).toHaveBeenCalledWith('content-type', 'text/html')
+  })
+
+  it('should no override content-type header', () => {
+    const res = mockRes({ hasHeader: vi.fn().mockReturnValue(true) })
+    sendHtml.call(res, 'value')
+    expect(res.setHeader).not.toHaveBeenCalled()
+  })
+
+  it('should send html', () => {
+    const res = mockRes()
+    sendHtml.call(res, 'value')
     expect(res.end).toHaveBeenCalledWith('value')
   })
 })
